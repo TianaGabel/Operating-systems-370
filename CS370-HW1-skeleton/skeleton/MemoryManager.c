@@ -80,8 +80,10 @@ int get_running_count()
     for (int i = 0; i < stop_index; i++){
         int curr_array_size = get_arr_size(rand());
 
-        //allocate memoryTODO and populate array 
-        int curr_array[curr_array_size];
+        //allocate memory 
+        int *curr_array;
+        curr_array = (int*)malloc(curr_array_size * sizeof(int));
+        //populate array
         for (int j = 0; j < curr_array_size; j++){
             curr_array[j] = rand();
         }
@@ -92,7 +94,8 @@ int get_running_count()
             running_count++;
         }
 
-        //deallocate memory TODO
+        //deallocate memory
+        free(curr_array);
     }
     return running_count;
 
