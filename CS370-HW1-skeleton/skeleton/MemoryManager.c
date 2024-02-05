@@ -75,6 +75,7 @@ int get_running_count()
 {
     int running_count = 0;
     int stop_index = get_iteration_count(rand());
+    printf("[MemoryManager] Number of Iterations: %d\n", stop_index);
     //iterate between 100k and 120k
     for (int i = 0; i < stop_index; i++){
         int curr_array_size = get_arr_size(rand());
@@ -86,7 +87,7 @@ int get_running_count()
         }
 
         //find median and check if divisible by 13
-        int median = return_median(*curr_array,curr_array_size);
+        int median = return_median(curr_array,curr_array_size);
         if ((median % 13) == 0){
             running_count++;
         }
