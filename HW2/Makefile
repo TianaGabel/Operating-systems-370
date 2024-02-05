@@ -6,5 +6,3 @@ build: $(FILES)
 	$(CC) -o $(OUT_EXE) $(FILES) 
 clean: 
 	rm -f *.o $(OUT_EXE)
-#run:	${OUT_EXE}
-#		./${OUT_EXE} ${ARGS}
