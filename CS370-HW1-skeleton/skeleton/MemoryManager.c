@@ -73,5 +73,38 @@ int get_arr_size(int rand)
  */
 int get_running_count()
 {
-    // TODO: Implement this method.
+    int running_count = 0;
+    int stop_index = get_iteration_count(rand());
+    //iterate between 100k and 120k
+    for (int i = 0; i < stop_index; i++){
+        int curr_array_size = get_arr_size(rand());
+
+        //allocate memoryTODO and populate array 
+        int curr_array[curr_array_size];
+        for (int j = 0; j < curr_array_size; j++){
+            curr_array[j] = rand();
+        }
+
+        //find median and check if divisible by 13
+        int median = return_median(*curr_array,curr_array_size);
+        if ((median % 13) == 0){
+            running_count++;
+        }
+
+        //deallocate memory TODO
+    }
+    return running_count;
+
+
+//  * 2. For each iteration:
+//  * 
+//  *      2.b Allocate memory for the array in the heap.
+//  *
+//  *      2.c Populate the array with random numbers.
+//  *
+//  *      2.d Get the median of the array using the function 'return_median'.
+//  *
+//  *      2.e Check if the median is divisible by 13.
+//  *
+//  *      2.f Return the number of medians that were divisible by 13.
 }
