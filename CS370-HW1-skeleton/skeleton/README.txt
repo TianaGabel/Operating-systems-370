@@ -11,6 +11,9 @@ This package includes the following files.
 To compile:
     gcc *.c
 
+To compile with Make file:
+    make all
+
 To run:
     ./a.out <seed>
 
