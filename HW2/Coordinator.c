@@ -21,7 +21,6 @@ int main(int argc, const char *argv[])
         //Failed Process
         if (pid < 0){
             printf("failed to create process in loop %d \n", i);
-            //TODO log errors??? process failed to be created
             exit(0);
 
         //Child process    
@@ -31,22 +30,13 @@ int main(int argc, const char *argv[])
 
         //Parent process
         } else {
-            printf("Coordinator: forked process with ID %d\n", pid);
-            printf( "Coordinator: waiting for process[%d]\n", pid);
+            printf("Coordinator: forked process with ID %d.\n", pid);
+            printf( "Coordinator: waiting for process[%d].\n", pid);
             int status;
             wait(&status);
             int result =WEXITSTATUS(status);
             printf("Coordinator: child process %d returned %d.\n", pid,result);
         }
-        //fork() return the value of the fork and print the PID
-        //Run execlp() to load the checker code to newly created process
-        //wait() until execuation of checker completes
-
     }
-//print PID
-//Print result
-//return success or error
-
-//print exit code
-
+    printf( "Coordinator: exiting.\n");
 }

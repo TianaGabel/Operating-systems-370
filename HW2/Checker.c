@@ -12,14 +12,21 @@ int main(int argc, char *argv[]){
     int divisor = atoi(argv[1]);
 
     int dividend = atoi(argv[2]);
+    int returnCode;
 
     printf("Checker process [%d]: Starting.\n", pid);
     //Put the calculations here
-    //This will need a bit more in the string formatting, and possible concatenating strings
-    printf("Checker process [%d]: %d *IS* divisible by %d\n", pid,dividend, divisor);
-
-    printf("Checker process [%d]: Returning 1.\n", pid);
-    return 0;
+    if ((dividend % divisor) == 0){
+        //Case is divisible
+        printf("Checker process [%d]: %d *IS* divisible by %d.\n", pid,dividend, divisor);
+        returnCode = 1;
+    } else {
+        //Case is not divisible
+        printf("Checker process [%d]: %d *IS NOT* divisible by %d.\n", pid,dividend, divisor);
+        returnCode = 0;
+    }
+    printf("Checker process [%d]: Returning %d.\n", pid, returnCode);
+    return returnCode;
 }
 
 
