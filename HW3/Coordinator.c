@@ -67,7 +67,6 @@ int main(int argc, const char *argv[])
             printf("Coordinator: result 1 read from shared memory: %d is divisible by %d.\n",dividend,divisor);
         }
         
-
         shmctl(*sharedMemoryPointer, IPC_RMID, NULL);
         
     }

@@ -40,4 +40,4 @@ $(C_OBJS): ${C_HEADERS}
 clean: 
 	rm -f *.o *- $(EXE1) $(EXE2) 
 package: 
-	zip -r Tatiana-Gabel-HW2.zip Coordinator.c Checker.c Makefile README.txt 
+	zip -r Tatiana-Gabel-HW3.zip Coordinator.c Checker.c Makefile README.txt 
