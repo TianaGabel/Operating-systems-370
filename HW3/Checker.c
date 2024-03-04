@@ -41,5 +41,6 @@ int main(int argc, char *argv[]){
 
     //detach from sms
     shmdt(sharedMemoryPointer);
+    return 1;
 
 }

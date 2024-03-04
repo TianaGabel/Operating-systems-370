@@ -11,51 +11,30 @@
 int main(int argc, const char *argv[]) 
 {
 
-    
-//     pid_t pid1 = fork();
-//     pid_t pid2 = fork();
-// for (int i = 0; i < 2; i++){
-//     if (pid == 0)
-//     {
-//         int status;
-//         wait(&status);
-//         printf("finished child value %d\n", i);
-//         break;
-//     }else if (pid > 0){
-//         printf("Created child %d\n", i);
-//         if ()
-//     }
-    
-//     }
-//     int status;
-//     wait(&status);
-//     printf("PID = %d\n", pid);
-
-
     if (argc != 6){
         printf("incorrect number of args \n %d", argc);
         exit(0);
     }
     
-    pid_t pid;
+    pid_t pid[5];
+    int smsID[5];
     const char *divisor = argv[1];
-    for (int i = 2; i <6 ; i++){
-        const char *workingNumber = argv[i];
+    for (int i = 0; i <4 ; i++){
+        const char *workingNumber = argv[i+2];
 
-        //Create pip
+        //Create pipe
         int fd[2];
         pipe(fd);
 
-        int smsID = shmget(IPC_PRIVATE, sizeof(int), IPC_CREAT | 0666);
+        smsID[i] = shmget(IPC_PRIVATE, sizeof(int), IPC_CREAT | 0666);
 
-        pid = fork();
+        pid[i] = fork();
         //Failed Process
-        if (pid < 0){
+        if (pid[i] < 0){
             printf("failed to create process in loop %d \n", i);
             exit(0);
-
         //Child process    
-        } else if (pid == 0){
+        } else if (pid[i] == 0){
             char buffer[8];
             sprintf(buffer, "%d", fd[0]);
             execlp("checker", divisor, workingNumber, buffer, NULL);
@@ -63,18 +42,32 @@ int main(int argc, const char *argv[])
 
         //Parent process
         } else {
-            printf("Coordinator: forked process with ID %d.\n", pid);
+            printf("Coordinator: forked process with ID %d.\n", pid[i]);
             //write to pipe
             close(fd[0]);
-            write(fd[1],&smsID, sizeof(smsID));
+            write(fd[1],&smsID[i], sizeof(smsID[i]));
             close(fd[1]);
-            printf("Coordinator: wrote shm ID %d to pipe (%d bytes)\n", smsID, sizeof(smsID));
+            printf("Coordinator: wrote shm ID %d to pipe (%d bytes)\n", smsID[i], sizeof(smsID[i]));
         }
-        printf( "Coordinator: waiting for process[%d].\n", pid);
+
+    }
+    for (int i = 0; i <4 ; i++){
+        printf( "Coordinator: waiting on child process ID %d...\n", pid[i]);
+        int *sharedMemoryPointer = (int*)shmat(smsID[i], NULL, 0);
         int status;
-        wait(&status);
-        //int result =WEXITSTATUS(status);
-        int *sharedMemoryPointer = (int*)shmat(smsID, NULL, 0);
+        waitpid(pid[i], &status, WEXITSTATUS(status));
+
+        int divisor = atoi(argv[1]);
+
+        int dividend = atoi(argv[i+2]);
+        
+        if (sharedMemoryPointer == 0){
+            printf("Coordinator: result 0 read from shared memory: %d is divisible by %d.\n",dividend,divisor);
+        } else {
+            printf("Coordinator: result 1 read from shared memory: %d is divisible by %d.\n",dividend,divisor);
+        }
+        
+
         shmctl(*sharedMemoryPointer, IPC_RMID, NULL);
         
     }
