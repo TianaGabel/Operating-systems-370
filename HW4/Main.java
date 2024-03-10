@@ -11,7 +11,7 @@
 //Only wait and notify are allowed
 
 public class Main{
-    final int BUFFER_SIZE = 1000;
+    final static int BUFFER_SIZE = 1000;
     public static void main(String[] args) {
         
         Monitor monitor = new Monitor(BUFFER_SIZE);

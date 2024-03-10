@@ -1,6 +1,6 @@
 //package HW4;
 
-public class Producer {
+public class Producer implements Runnable {
 
     //Only wait and notify are allowed
     //avoid deadlocks
