@@ -9,6 +9,8 @@ public class Monitor {
     Thread waitingForFull;
     Thread WaitingOnMutex;
 
+    //Once we add wait and notify we may need to add the synchronized keyword
+
     public Monitor(int bufferSize){
         mutex = 1;
         empty = bufferSize;
