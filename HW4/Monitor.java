@@ -15,30 +15,34 @@ public class Monitor {
         full = 0;
     }
 
-    public synchronized void aquireMutex(){
-        while(mutex <= 0);
+    public void aquireMutex(){
+        System.out.println("m ok =" + mutex);
+        while(mutex <= 0){;}
         mutex--;
     }
 
-    public synchronized void releaseMutex(){
+    public void releaseMutex(){
         mutex++;
     }
 
-    public synchronized void aquireEmpty(){
+    public void aquireEmpty(){
         while(empty <= 0);
         empty--;
     }
 
-    public synchronized void releaseEmpty(){
+    public void releaseEmpty(){
         empty++;
     }
 
-    public synchronized void aquireFull(){
-        while(full <= 0);
+    public void aquireFull(){
+        System.out.println("Start Aquire full");
+        while(full <= 0){;}
+        System.out.println("not ok");
         full--;
     }
 
-    public synchronized void releaseFull(){
+    public void releaseFull(){
+        System.out.println("Released Full = " + full);
         full++;
     }
 

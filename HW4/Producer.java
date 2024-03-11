@@ -12,20 +12,23 @@ public class Producer implements Runnable {
     int bufferValueCounter;
     int counter;
     Monitor monitor;
+    final int VALUES_TO_BE_PRODUCED = 10;
 
     public Producer(Monitor monitor){
         this.monitor = monitor;
         bufferValueCounter = 0;
         counter = 0;
+        System.out.println("Created Producer");
     }
 
 
     public void run(){
-        while (counter < 1000000){
+        while (counter < VALUES_TO_BE_PRODUCED){
             int currValue = 0;
 
             monitor.aquireEmpty();
             monitor.aquireMutex();
+            System.out.println("Producer critical section =" + counter);
             //Add to buffer
             monitor.releaseMutex();
             monitor.releaseFull();
