@@ -2,6 +2,7 @@ public class Monitor {
     private int mutex;
     private int empty;
     private int full;
+    private Double[] circularBuffer;
 
     //waits for empty slots
     Thread waitingForEmpty;
@@ -15,6 +16,15 @@ public class Monitor {
         mutex = 1;
         empty = bufferSize;
         full = 0;
+        circularBuffer = new Double[bufferSize];
+    }
+
+    public synchronized double consume(int out){
+        return circularBuffer[out];
+    }
+
+    public synchronized void produce(int in, double currValue){
+        circularBuffer[in] = currValue;
     }
 
     public void aquireMutex(){

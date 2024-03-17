@@ -18,8 +18,7 @@ public class Producer implements Runnable {
     final int VALUES_TO_BE_PRODUCED = 10;
     final int BUFFER_SIZE = 3;
 
-    public Producer(Monitor monitor, Double[] buffer){
-        circularBuffer = buffer;
+    public Producer(Monitor monitor){
         this.monitor = monitor;
         bufferValueCounter = 0.0;
         counter = 0;
@@ -38,7 +37,7 @@ public class Producer implements Runnable {
             monitor.aquireMutex();
             System.out.println("Producer critical section =" + counter);
             //Add to buffer
-            circularBuffer[in] = currProduced;
+            monitor.produce(in, currProduced);
             in = (in + 1) % BUFFER_SIZE;
             monitor.releaseMutex();
             monitor.releaseFull();

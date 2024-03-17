@@ -9,15 +9,14 @@ public class Consumer implements Runnable{
 Double bufferValueCounter;
 int counter;
 Monitor monitor;
-Double[] circularBuffer;
+
 final int VALUES_TO_BE_PRODUCED = 10;
 final int BUFFER_SIZE = 3;
 
-    public Consumer(Monitor monitor, Double[] buffer){
+    public Consumer(Monitor monitor){
         this.monitor = monitor;
         bufferValueCounter = 0.0;
         counter = 0;
-        circularBuffer = buffer;
         System.out.println("Created Consumer");
     }
 
@@ -30,8 +29,8 @@ final int BUFFER_SIZE = 3;
             monitor.aquireFull();
             monitor.aquireMutex();
             System.out.println("Consumer critical section =" + counter);
-            //Add to buffer
-            currConsumed = circularBuffer[out];
+            //remove from buffer
+            currConsumed = monitor.consume(out);
             out = (out + 1) % BUFFER_SIZE;
             monitor.releaseMutex();
             monitor.releaseEmpty();
