@@ -3,6 +3,8 @@ public class Monitor {
     private int empty;
     private int full;
     private Double[] circularBuffer;
+    public final int VALUES_TO_BE_PRODUCED;
+    public final int BUFFER_SIZE;
 
     //waits for empty slots
     Thread waitingForEmpty;
@@ -12,7 +14,9 @@ public class Monitor {
 
     //Once we add wait and notify we may need to add the synchronized keyword
 
-    public Monitor(int bufferSize){
+    public Monitor(int bufferSize, int valuesToBeProduced){
+        VALUES_TO_BE_PRODUCED = valuesToBeProduced;
+        BUFFER_SIZE = bufferSize;
         mutex = 1;
         empty = bufferSize;
         full = 0;
@@ -28,7 +32,7 @@ public class Monitor {
     }
 
     public void aquireMutex(){
-        System.out.println("m ok =" + mutex);
+        //System.out.println("m ok =" + mutex);
         while(mutex <= 0){;}
         mutex--;
     }
@@ -47,14 +51,14 @@ public class Monitor {
     }
 
     public void aquireFull(){
-        System.out.println("Start Aquire full");
+        //System.out.println("Start Aquire full");
         while(full <= 0){;}
-        System.out.println("not ok");
+        //System.out.println("not ok");
         full--;
     }
 
     public void releaseFull(){
-        System.out.println("Released Full = " + full);
+        //System.out.println("Released Full = " + full);
         full++;
     }
 

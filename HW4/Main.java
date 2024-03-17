@@ -11,10 +11,11 @@
 //Only wait and notify are allowed
 
 public class Main{
-    final static int BUFFER_SIZE = 3;
+    final static int BUFFER_SIZE = 10;
+    final static int VALUES_TO_BE_PRODUCED = 100;
     public static void main(String[] args) {
         
-        Monitor monitor = new Monitor(BUFFER_SIZE);
+        Monitor monitor = new Monitor(BUFFER_SIZE, VALUES_TO_BE_PRODUCED);
         Producer producer = new Producer(monitor);
         Consumer consumer = new Consumer(monitor);
         System.out.println("Created Producer and Consumer");

@@ -15,10 +15,12 @@ public class Producer implements Runnable {
     int counter;
     Monitor monitor;
     Double[] circularBuffer;
-    final int VALUES_TO_BE_PRODUCED = 10;
-    final int BUFFER_SIZE = 3;
+    final int VALUES_TO_BE_PRODUCED;
+    final int BUFFER_SIZE;
 
     public Producer(Monitor monitor){
+        BUFFER_SIZE = monitor.BUFFER_SIZE;
+        VALUES_TO_BE_PRODUCED = monitor.VALUES_TO_BE_PRODUCED;
         this.monitor = monitor;
         bufferValueCounter = 0.0;
         counter = 0;
@@ -35,7 +37,7 @@ public class Producer implements Runnable {
 
             monitor.aquireEmpty();
             monitor.aquireMutex();
-            System.out.println("Producer critical section =" + counter);
+            //System.out.println("Producer critical section =" + counter);
             //Add to buffer
             monitor.produce(in, currProduced);
             in = (in + 1) % BUFFER_SIZE;
@@ -44,7 +46,11 @@ public class Producer implements Runnable {
 
             bufferValueCounter += currProduced;
             counter++;
+            if ((counter % 1000) == 0){
+                System.out.println("Producer: Generated " + counter + " items, Cumulative value of generated items=" + bufferValueCounter);
+            }
         }
+        System.out.println("Done" + counter);
     }
     
 }

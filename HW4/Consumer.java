@@ -10,10 +10,12 @@ Double bufferValueCounter;
 int counter;
 Monitor monitor;
 
-final int VALUES_TO_BE_PRODUCED = 10;
-final int BUFFER_SIZE = 3;
+final int VALUES_TO_BE_PRODUCED;
+final int BUFFER_SIZE;
 
     public Consumer(Monitor monitor){
+        BUFFER_SIZE = monitor.BUFFER_SIZE;
+        VALUES_TO_BE_PRODUCED = monitor.VALUES_TO_BE_PRODUCED;
         this.monitor = monitor;
         bufferValueCounter = 0.0;
         counter = 0;
@@ -25,10 +27,10 @@ final int BUFFER_SIZE = 3;
         Double currConsumed = 0.0;
         while (counter < VALUES_TO_BE_PRODUCED){
             
-            System.out.println("start Consumer code");
+            //System.out.println("start Consumer code");
             monitor.aquireFull();
             monitor.aquireMutex();
-            System.out.println("Consumer critical section =" + counter);
+            //System.out.println("Consumer critical section =" + counter);
             //remove from buffer
             currConsumed = monitor.consume(out);
             out = (out + 1) % BUFFER_SIZE;
@@ -37,7 +39,11 @@ final int BUFFER_SIZE = 3;
 
             bufferValueCounter += currConsumed;
             counter++;
+            if ((counter % 100000) == 0){
+                System.out.println("Consumer: Consumed " + counter + "items, Cumulative value of consumed items=" + bufferValueCounter);
+            }
         }   
+        System.out.println("C Done" + counter);
     }
 
 }
