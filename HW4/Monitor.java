@@ -1,6 +1,7 @@
 public class Monitor {
-    private int mutex;
+    //The number of currently empty
     private int empty;
+    //The number of currently full
     private int full;
     private Double[] circularBuffer;
     private boolean exit;
@@ -13,7 +14,6 @@ public class Monitor {
         VALUES_TO_BE_PRODUCED = valuesToBeProduced;
         BUFFER_SIZE = bufferSize;
         INCREMENT = increment;
-        mutex = 1;
         empty = bufferSize;
         full = 0;
         circularBuffer = new Double[bufferSize];
@@ -26,19 +26,6 @@ public class Monitor {
 
     public synchronized void produce(int in, double currValue){
         circularBuffer[in] = currValue;
-    }
-
-    public synchronized void aquireMutex() throws InterruptedException{
-        //System.out.println("m ok =" + mutex);
-        while(mutex <= 0){
-            wait();
-        }
-        mutex--;
-    }
-
-    public synchronized void releaseMutex(){
-        mutex++;
-        notify();
     }
 
     public synchronized void aquireEmpty() throws InterruptedException{

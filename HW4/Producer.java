@@ -38,12 +38,9 @@ public class Producer implements Runnable {
             currProduced = random.nextDouble() * 100.0;
 
             monitor.aquireEmpty();
-            monitor.aquireMutex();
-            //System.out.println("Producer critical section =" + counter);
             //Add to buffer
             monitor.produce(in, currProduced);
             in = (in + 1) % BUFFER_SIZE;
-            monitor.releaseMutex();
             monitor.releaseFull();
 
             bufferValueCounter += currProduced;
