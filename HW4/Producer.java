@@ -55,7 +55,7 @@ public class Producer implements Runnable {
         }
         monitor.exit();
     } catch(Exception e){
-        System.out.println("Nah dude it's an exception"); 
+        e.printStackTrace();
     }
     }
     

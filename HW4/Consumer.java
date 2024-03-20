@@ -47,7 +47,9 @@ final int INCREMENT;
             }
         }  
         monitor.exit();
-    }catch (Exception e){}
+    }catch (Exception e){
+        e.printStackTrace();
+    }
     }
 
 }

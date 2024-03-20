@@ -11,3 +11,5 @@ compile: $(CLASSES)
 	javac -cp . $(CLASSES) 
 clean:
 	$(RM) *.class
+package: 
+	zip -r Tatiana-Gabel-HW4.zip $(CLASSES) Makefile README.txt 
