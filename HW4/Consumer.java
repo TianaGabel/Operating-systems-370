@@ -31,12 +31,10 @@ final int INCREMENT;
             
             //System.out.println("start Consumer code");
             monitor.aquireFull();
-            monitor.aquireMutex();
             //System.out.println("Consumer critical section =" + counter);
             //remove from buffer
             currConsumed = monitor.consume(out);
             out = (out + 1) % BUFFER_SIZE;
-            monitor.releaseMutex();
             monitor.releaseEmpty();
 
             bufferValueCounter += currConsumed;
