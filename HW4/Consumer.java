@@ -12,10 +12,12 @@ Monitor monitor;
 
 final int VALUES_TO_BE_PRODUCED;
 final int BUFFER_SIZE;
+final int INCREMENT;
 
     public Consumer(Monitor monitor){
         BUFFER_SIZE = monitor.BUFFER_SIZE;
         VALUES_TO_BE_PRODUCED = monitor.VALUES_TO_BE_PRODUCED;
+        INCREMENT = monitor.INCREMENT;
         this.monitor = monitor;
         bufferValueCounter = 0.0;
         counter = 0;
@@ -23,6 +25,7 @@ final int BUFFER_SIZE;
     }
 
     public void run(){
+        try{
         int out = 0;
         Double currConsumed = 0.0;
         while (counter < VALUES_TO_BE_PRODUCED){
@@ -39,11 +42,12 @@ final int BUFFER_SIZE;
 
             bufferValueCounter += currConsumed;
             counter++;
-            if ((counter % 100000) == 0){
+            if ((counter % INCREMENT) == 0){
                 System.out.println("Consumer: Consumed " + counter + "items, Cumulative value of consumed items=" + bufferValueCounter);
             }
         }   
         System.out.println("C Done" + counter);
+    }catch (Exception e){}
     }
 
 }

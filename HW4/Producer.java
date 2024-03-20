@@ -17,10 +17,12 @@ public class Producer implements Runnable {
     Double[] circularBuffer;
     final int VALUES_TO_BE_PRODUCED;
     final int BUFFER_SIZE;
+    final int INCREMENT;
 
     public Producer(Monitor monitor){
         BUFFER_SIZE = monitor.BUFFER_SIZE;
         VALUES_TO_BE_PRODUCED = monitor.VALUES_TO_BE_PRODUCED;
+        INCREMENT = monitor.INCREMENT;
         this.monitor = monitor;
         bufferValueCounter = 0.0;
         counter = 0;
@@ -29,6 +31,7 @@ public class Producer implements Runnable {
 
 
     public void run(){
+        try{
         int in = 0;
         Double currProduced = 0.0;
         Random random = new Random();
@@ -46,11 +49,14 @@ public class Producer implements Runnable {
 
             bufferValueCounter += currProduced;
             counter++;
-            if ((counter % 1000) == 0){
+            if ((counter % INCREMENT) == 0){
                 System.out.println("Producer: Generated " + counter + " items, Cumulative value of generated items=" + bufferValueCounter);
             }
         }
         System.out.println("Done" + counter);
+    } catch(Exception e){
+        System.out.println("Nah dude it's an exception"); 
+    }
     }
     
 }
