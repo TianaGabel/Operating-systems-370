@@ -3,17 +3,11 @@ public class Monitor {
     private int empty;
     private int full;
     private Double[] circularBuffer;
+    private boolean exit;
     public final int VALUES_TO_BE_PRODUCED;
     public final int BUFFER_SIZE;
     public final int INCREMENT;
 
-    //waits for empty slots
-    Thread waitingForEmpty;
-    //waits for an element in the buffer
-    Thread waitingForFull;
-    Thread WaitingOnMutex;
-
-    //Once we add wait and notify we may need to add the synchronized keyword
 
     public Monitor(int bufferSize, int valuesToBeProduced,int increment){
         VALUES_TO_BE_PRODUCED = valuesToBeProduced;
@@ -23,6 +17,7 @@ public class Monitor {
         empty = bufferSize;
         full = 0;
         circularBuffer = new Double[bufferSize];
+        exit = false;
     }
 
     public synchronized double consume(int out){
@@ -70,6 +65,14 @@ public class Monitor {
         //System.out.println("Released Full = " + full);
         full++;
         notify();
+    }
+
+    public synchronized void exit(){
+        if (!exit){
+            exit = true;
+        } else {
+            System.out.println("Exiting!");
+        }
     }
 
     

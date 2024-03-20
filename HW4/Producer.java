@@ -26,7 +26,6 @@ public class Producer implements Runnable {
         this.monitor = monitor;
         bufferValueCounter = 0.0;
         counter = 0;
-        System.out.println("Created Producer");
     }
 
 
@@ -50,10 +49,11 @@ public class Producer implements Runnable {
             bufferValueCounter += currProduced;
             counter++;
             if ((counter % INCREMENT) == 0){
-                System.out.println("Producer: Generated " + counter + " items, Cumulative value of generated items=" + bufferValueCounter);
+                String statement = String.format("Producer: Generated %,d items,", counter) + String.format(" Cumulative value of generated items=%.3f", bufferValueCounter);
+                System.out.println(statement);
             }
         }
-        System.out.println("Done" + counter);
+        monitor.exit();
     } catch(Exception e){
         System.out.println("Nah dude it's an exception"); 
     }

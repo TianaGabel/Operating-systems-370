@@ -21,7 +21,6 @@ final int INCREMENT;
         this.monitor = monitor;
         bufferValueCounter = 0.0;
         counter = 0;
-        System.out.println("Created Consumer");
     }
 
     public void run(){
@@ -43,10 +42,11 @@ final int INCREMENT;
             bufferValueCounter += currConsumed;
             counter++;
             if ((counter % INCREMENT) == 0){
-                System.out.println("Consumer: Consumed " + counter + "items, Cumulative value of consumed items=" + bufferValueCounter);
+                String statement = String.format("Consumer: Consumed %,d items,", counter) + String.format(" Cumulative value of consumed items=%.3f", bufferValueCounter);
+                System.out.println(statement);
             }
-        }   
-        System.out.println("C Done" + counter);
+        }  
+        monitor.exit();
     }catch (Exception e){}
     }
 

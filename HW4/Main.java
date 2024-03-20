@@ -12,22 +12,19 @@
 
 public class Main{
     final static int BUFFER_SIZE = 1000;
-    final static int VALUES_TO_BE_PRODUCED = 100000;
-    final static int INCREMENT = 10000;
+    final static int VALUES_TO_BE_PRODUCED = 1000000;
+    final static int INCREMENT = 100000;
     public static void main(String[] args){
         
         try {
         Monitor monitor = new Monitor(BUFFER_SIZE, VALUES_TO_BE_PRODUCED, INCREMENT);
         Producer producer = new Producer(monitor);
         Consumer consumer = new Consumer(monitor);
-        System.out.println("Created Producer and Consumer");
         Thread p = new Thread(producer);
         Thread c = new Thread(consumer);
-        System.out.println("Created threads");
 
         p.start();
         c.start();
-        System.out.println("Code started!");
         }catch (Exception e){
             e.printStackTrace();
         }
