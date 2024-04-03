@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -19,3 +20,16 @@ Process::Process(string t_pid, int t_arrivalTime, int t_burstDuration, int t_pri
     }
     priority = t_priority;
 }   
+
+Process::Process(string record){
+    stringstream s(record);
+    string val1, val2, val3, val4;
+    getline(s, val1, ',');
+    getline(s, val2, ',');
+    getline(s, val3, ',');
+    getline(s, val4, ',');
+    PID = val1;
+    arrivalTime = stoi(val2);
+    burstDuration = stoi(val3);
+    priority = stoi(val3);
+}

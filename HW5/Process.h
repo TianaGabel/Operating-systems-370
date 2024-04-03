@@ -18,6 +18,7 @@ private:
 
 public:
     Process(string t_pid, int t_arrivalTime, int t_burstDuration, int t_priority);
+    Process(string record);
 
     string getPID() const { return PID; }
     int getArrivalTime() const { return arrivalTime; }
