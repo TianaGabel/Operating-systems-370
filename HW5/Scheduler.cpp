@@ -14,12 +14,26 @@
 
 using namespace std;
 
-void FirstComeFirstServed(vector<Process> arrivalList){
-	for (auto process : arrivalList){
-		std::cout << process.getArrivalTime() << "  ";
-		std::cout << endl;
+void FirstComeFirstServed(vector<Process> arrivalList, int numLines){
+	int clock = 0;
+	int turnAroundTime = 0;
+	long totalTurnAroundTime = 0;
+	int waitingTime = 0;
+	long totalWaitingTime = 0;
+	for (auto currProcess : arrivalList){
+		//Case that no-proces has arrived
+		if (clock < currProcess.getArrivalTime()){
+			clock = currProcess.getArrivalTime();
+		}
+		//Same process for every other case
+		clock += currProcess.getBurstDuration();
+		turnAroundTime = clock - currProcess.getArrivalTime();
+		waitingTime = turnAroundTime - currProcess.getArrivalTime();
+		totalTurnAroundTime += turnAroundTime;
+		totalWaitingTime += waitingTime;
 	}
-
+	PrintFormatting("First Come First Served", totalTurnAroundTime, totalWaitingTime, numLines);
+	//NOt a class
 }
 
 void ShortestJobFirst(int& seconds) {
@@ -31,7 +45,10 @@ void Priority(){
 
 }
 
-void PrintFormatting(string algo, float turnAroundTime, float waitingTime, float throughput ){
+void PrintFormatting(string algo,long totalTurnAroundTime, long totalWaitingTime, int numLines ){
+	float turnAroundTime = totalTurnAroundTime * 1.0 / numLines;
+	float waitingTime = totalWaitingTime * 1.0 / numLines;
+	float throughput = 1 / turnAroundTime;
 	std::cout << "	--- " << algo << " ---" << endl;
 	std::cout << "Average Turnaround Time: " << turnAroundTime << endl;
 	std::cout << "Average Waiting Time: " << waitingTime << endl;
@@ -54,7 +71,7 @@ Process createProcess(string record){
 
 int main() {
     string inputFile = "CS370-HW5-Input.csv";
-    ifstream inputFS (inputFile);
+    fstream inputFS (inputFile);
 
 	std::cout << "Trying to open file" << endl;
     //Check if the file is open or not
@@ -63,25 +80,21 @@ int main() {
 		return 1;
 	}
 
-    //We will have to ask about what file types are allowed
-    //We need a fifo/queue for FCFS
-    //We need a heap for SJF
 	string PID;
 	int arrivalTime = 0;
-	//int burstDuration;
-	//int priority;
 
 	int numLines=0;
 	vector<Process> processList;
 	string currLine;
-	while (getline (inputFS, currLine)) {
+	while (getline (inputFS, currLine, '\n')) {
 		std::cout << "Read element" << endl;
 		++numLines; //records lines in file
 
 		if (!inputFS.fail()) {
+			std::cout << "bruh" << endl;
 			Process p = createProcess(currLine);
-			cout << p.getPID() << " " << p.getArrivalTime() << " " << p.getBurstDuration() << " " << p.getPriority();
-				if (processList.empty()){
+			std::cout << p.getPID() << " " << p.getArrivalTime() << " " << p.getBurstDuration() << " " << p.getPriority() << endl;
+			if (processList.empty()){
 				//First item added
 				processList.push_back(p);
 				continue;
@@ -89,14 +102,14 @@ int main() {
 			for(int i = 0; i < static_cast<int> (processList.size()); i++){
 				if(arrivalTime < processList.at(i).getArrivalTime()){
 					processList.insert(processList.begin() + i,p);
-					continue;
+					break;
 				}
 			} 
 		}
 	}
 	inputFS.close();
 
-	FirstComeFirstServed(processList);
+	FirstComeFirstServed(processList, numLines);
 	
     //implement FCFS (non-preemptive)
     //turnaround time
