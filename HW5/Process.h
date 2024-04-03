@@ -15,10 +15,12 @@ private:
         int arrivalTime{};
         int burstDuration{};
         int priority;
+        int counter;
 
 public:
     Process(string t_pid, int t_arrivalTime, int t_burstDuration, int t_priority);
     Process(string record);
+    bool decrementCounter();
 
     string getPID() const { return PID; }
     int getArrivalTime() const { return arrivalTime; }

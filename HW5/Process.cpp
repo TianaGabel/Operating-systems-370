@@ -9,7 +9,6 @@ using namespace std;
 
 #include "Process.h"
 
-
 Process::Process(string t_pid, int t_arrivalTime, int t_burstDuration, int t_priority)
     : PID{t_pid}
     , arrivalTime{t_arrivalTime}
@@ -19,6 +18,7 @@ Process::Process(string t_pid, int t_arrivalTime, int t_burstDuration, int t_pri
         //Throw an exception 
     }
     priority = t_priority;
+    counter = t_burstDuration;
 }   
 
 Process::Process(string record){
@@ -32,4 +32,9 @@ Process::Process(string record){
     arrivalTime = stoi(val2);
     burstDuration = stoi(val3);
     priority = stoi(val3);
+}
+
+bool Process::decrementCounter(){
+    --counter;
+    return counter == 0;
 }

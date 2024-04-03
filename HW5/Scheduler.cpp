@@ -8,19 +8,21 @@
 #include <string>
 #include <fstream>
 #include <queue>
+#include <deque>
 #include <vector>
 #include <sstream> 
 #include "Process.h"
 
 using namespace std;
 
-void FirstComeFirstServed(vector<Process> arrivalList, int numLines){
+string FirstComeFirstServed(deque<Process> arrivalList, int numLines){
 	int clock = 0;
 	int turnAroundTime = 0;
 	long totalTurnAroundTime = 0;
 	int waitingTime = 0;
 	long totalWaitingTime = 0;
-	for (auto currProcess : arrivalList){
+	for (int i = 0; i < numLines; i++){
+		Process currProcess = arrivalList.at(i);
 		//Case that no-proces has arrived
 		if (clock < currProcess.getArrivalTime()){
 			clock = currProcess.getArrivalTime();
@@ -28,31 +30,37 @@ void FirstComeFirstServed(vector<Process> arrivalList, int numLines){
 		//Same process for every other case
 		clock += currProcess.getBurstDuration();
 		turnAroundTime = clock - currProcess.getArrivalTime();
-		waitingTime = turnAroundTime - currProcess.getArrivalTime();
+		waitingTime = turnAroundTime - currProcess.getBurstDuration();
 		totalTurnAroundTime += turnAroundTime;
 		totalWaitingTime += waitingTime;
+		std::cout << "yo " << currProcess.getArrivalTime() << endl;
 	}
-	PrintFormatting("First Come First Served", totalTurnAroundTime, totalWaitingTime, numLines);
-	//NOt a class
+	float turnAround = totalTurnAroundTime * 1.0 / numLines;
+	float waiting = totalWaitingTime * 1.0 / numLines;
+	float throughput = 1.0 / turnAroundTime;
+	
+	stringstream s;
+	s << "	--- " << "First Come First Served" << " ---" << endl;
+	s << "Average Turnaround Time: " << turnAround << endl;
+	s << "Average Waiting Time: " << waiting << endl;
+	s << "Throughput: " << throughput << endl;
+
+	return s.str();
 }
 
-void ShortestJobFirst(int& seconds) {
-	//adds one second to current time
-	seconds += 1;
+void ShortestJobFirst(deque<Process> arrivalList, int numLines) {
+	int clock = 0;
+	numLines++;
+	while(true){
+		for(int i = 0; clock == arrivalList.at(i).getArrivalTime(); i++){break;}
+		break;
+
+
+	}
+
 }
 
 void Priority(){
-
-}
-
-void PrintFormatting(string algo,long totalTurnAroundTime, long totalWaitingTime, int numLines ){
-	float turnAroundTime = totalTurnAroundTime * 1.0 / numLines;
-	float waitingTime = totalWaitingTime * 1.0 / numLines;
-	float throughput = 1 / turnAroundTime;
-	std::cout << "	--- " << algo << " ---" << endl;
-	std::cout << "Average Turnaround Time: " << turnAroundTime << endl;
-	std::cout << "Average Waiting Time: " << waitingTime << endl;
-	std::cout << "Throughput: " << throughput << endl;
 
 }
 
@@ -70,7 +78,9 @@ Process createProcess(string record){
 }
 
 int main() {
-    string inputFile = "CS370-HW5-Input.csv";
+	//TODO THIS CANNOT BE HARDCODED
+    //string inputFile = "CS370-HW5-Input.csv";
+	string inputFile = "AtestFile.csv";
     fstream inputFS (inputFile);
 
 	std::cout << "Trying to open file" << endl;
@@ -84,7 +94,7 @@ int main() {
 	int arrivalTime = 0;
 
 	int numLines=0;
-	vector<Process> processList;
+	deque<Process> processList;
 	string currLine;
 	while (getline (inputFS, currLine, '\n')) {
 		std::cout << "Read element" << endl;
@@ -99,17 +109,24 @@ int main() {
 				processList.push_back(p);
 				continue;
 			}
+			bool atEnd = true;
 			for(int i = 0; i < static_cast<int> (processList.size()); i++){
-				if(arrivalTime < processList.at(i).getArrivalTime()){
+				if(arrivalTime > processList.at(i).getArrivalTime()){
 					processList.insert(processList.begin() + i,p);
+					atEnd = false;
 					break;
 				}
-			} 
+			}
+			if(atEnd){
+				processList.push_back(p);
+			}
 		}
 	}
 	inputFS.close();
 
-	FirstComeFirstServed(processList, numLines);
+	std::cout << FirstComeFirstServed(processList, numLines);
+	//std::cout << ShortestJobFirst(processList, numLines);
+	//std::cout << Priority(processList, numLines);
 	
     //implement FCFS (non-preemptive)
     //turnaround time
