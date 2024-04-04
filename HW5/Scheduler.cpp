@@ -33,14 +33,13 @@ string FirstComeFirstServed(deque<Process> arrivalList, int numLines){
 		waitingTime = turnAroundTime - currProcess.getBurstDuration();
 		totalTurnAroundTime += turnAroundTime;
 		totalWaitingTime += waitingTime;
-		std::cout << "yo " << currProcess.getArrivalTime() << endl;
 	}
 	float turnAround = totalTurnAroundTime * 1.0 / numLines;
 	float waiting = totalWaitingTime * 1.0 / numLines;
-	float throughput = 1.0 / turnAroundTime;
+	float throughput = 1.0 / turnAround;
 	
 	stringstream s;
-	s << "	--- " << "First Come First Served" << " ---" << endl;
+	s << "	--- " << "FCFS" << " ---" << endl;
 	s << "Average Turnaround Time: " << turnAround << endl;
 	s << "Average Waiting Time: " << waiting << endl;
 	s << "Throughput: " << throughput << endl;
@@ -48,19 +47,110 @@ string FirstComeFirstServed(deque<Process> arrivalList, int numLines){
 	return s.str();
 }
 
-void ShortestJobFirst(deque<Process> arrivalList, int numLines) {
+string ShortestJobFirst(deque<Process> arrivalList, int numLines) {
+	int turnAroundTime = 0;
+	long totalTurnAroundTime = 0;
+	int waitingTime = 0;
+	long totalWaitingTime = 0;
 	int clock = 0;
-	numLines++;
-	while(true){
-		for(int i = 0; clock == arrivalList.at(i).getArrivalTime(); i++){break;}
-		break;
-
-
+	deque<Process> ready;
+	int i = 0;
+	//While there are still processes or there are ready processes
+	while((i < numLines) or (!ready.empty())){
+		while((i < numLines) and (clock >= arrivalList.at(i).getArrivalTime())){
+			if (ready.empty()){
+				//First or last item added
+				ready.push_back(arrivalList.at(i));
+				i++;
+				continue;
+			} else if (ready.back().getBurstDuration() < arrivalList.at(i).getBurstDuration()){
+				ready.push_back(arrivalList.at(i));
+				i++;
+				continue;
+			}
+			for(int j = 0; j < static_cast<int> (ready.size()); j++){
+				if(arrivalList.at(i).getBurstDuration() < ready.at(j).getBurstDuration()){
+					ready.insert(ready.begin() + j,arrivalList.at(i));
+					i++;
+					break;
+				}
+			}
+		}
+		clock++;
+		if(ready.front().decrementCounter()){
+			turnAroundTime = clock - ready.front().getArrivalTime();
+			waitingTime = turnAroundTime - ready.front().getBurstDuration();
+			totalTurnAroundTime += turnAroundTime;
+			totalWaitingTime += waitingTime;
+			ready.pop_front();
+			
+		}
 	}
+	float turnAround = totalTurnAroundTime * 1.0 / numLines;
+	float waiting = totalWaitingTime * 1.0 / numLines;
+	float throughput = 1.0 / turnAround;
+	
+	stringstream s;
+	s << "	--- " << "SJFP" << " ---" << endl;
+	s << "Average Turnaround Time: " << turnAround << endl;
+	s << "Average Waiting Time: " << waiting << endl;
+	s << "Throughput: " << throughput << endl;
+
+	return s.str();
 
 }
 
-void Priority(){
+string Priority(deque<Process> arrivalList, int numLines){
+	int turnAroundTime = 0;
+	long totalTurnAroundTime = 0;
+	int waitingTime = 0;
+	long totalWaitingTime = 0;
+	int clock = 0;
+	deque<Process> ready;
+	int i = 0;
+	//While there are still processes or there are ready processes
+	while((i < numLines) or (!ready.empty())){
+		while((i < numLines) and (clock >= arrivalList.at(i).getArrivalTime())){
+			if (ready.empty()){
+				//First or last item added
+				ready.push_back(arrivalList.at(i));
+				i++;
+				continue;
+			} else if (ready.back().getPriority() < arrivalList.at(i).getPriority()){
+				ready.push_back(arrivalList.at(i));
+				i++;
+				continue;
+			}
+			for(int j = 0; j < static_cast<int> (ready.size()); j++){
+				if(arrivalList.at(i).getPriority() < ready.at(j).getPriority()){
+					ready.insert(ready.begin() + j,arrivalList.at(i));
+					i++;
+					break;
+				}
+			}
+		}
+		clock++;
+		if(ready.front().decrementCounter()){
+			turnAroundTime = clock - ready.front().getArrivalTime();
+			waitingTime = turnAroundTime - ready.front().getBurstDuration();
+			totalTurnAroundTime += turnAroundTime;
+			totalWaitingTime += waitingTime;
+			ready.pop_front();
+			
+		}
+	}
+	float turnAround = totalTurnAroundTime * 1.0 / numLines;
+	float waiting = totalWaitingTime * 1.0 / numLines;
+	float throughput = 1.0 / turnAround;
+	
+	stringstream s;
+	s << "	--- " << "Priority" << " ---" << endl;
+	s << "Average Turnaround Time: " << turnAround << endl;
+	s << "Average Waiting Time: " << waiting << endl;
+	s << "Throughput: " << throughput << endl;
+
+	return s.str();
+
 
 }
 
@@ -78,12 +168,12 @@ Process createProcess(string record){
 }
 
 int main() {
+	//TODO throughput value is incorrect
 	//TODO THIS CANNOT BE HARDCODED
     //string inputFile = "CS370-HW5-Input.csv";
 	string inputFile = "AtestFile.csv";
     fstream inputFS (inputFile);
 
-	std::cout << "Trying to open file" << endl;
     //Check if the file is open or not
 	if (!inputFS.is_open()) {
 		std::cout << "Could not open file" << endl;
@@ -97,13 +187,11 @@ int main() {
 	deque<Process> processList;
 	string currLine;
 	while (getline (inputFS, currLine, '\n')) {
-		std::cout << "Read element" << endl;
 		++numLines; //records lines in file
 
 		if (!inputFS.fail()) {
-			std::cout << "bruh" << endl;
 			Process p = createProcess(currLine);
-			std::cout << p.getPID() << " " << p.getArrivalTime() << " " << p.getBurstDuration() << " " << p.getPriority() << endl;
+			//std::cout << p.getPID() << " " << p.getArrivalTime() << " " << p.getBurstDuration() << " " << p.getPriority() << endl;
 			if (processList.empty()){
 				//First item added
 				processList.push_back(p);
@@ -125,18 +213,6 @@ int main() {
 	inputFS.close();
 
 	std::cout << FirstComeFirstServed(processList, numLines);
-	//std::cout << ShortestJobFirst(processList, numLines);
-	//std::cout << Priority(processList, numLines);
-	
-    //implement FCFS (non-preemptive)
-    //turnaround time
-    //Completedtime - Arrival time
-    //waiting time
-    //Turnaround time - burst duration
-    //throughput
-    //NEED CLARIFICATION
-
-    //SJF
-
-    //priority
+	std::cout << ShortestJobFirst(processList, numLines);
+	std::cout << Priority(processList, numLines);
 }
