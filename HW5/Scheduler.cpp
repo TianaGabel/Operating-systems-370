@@ -2,14 +2,11 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-//FIXME what is this top thing
 #include <stdio.h>
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <queue>
 #include <deque>
-#include <vector>
 #include <sstream> 
 #include "Process.h"
 
@@ -22,7 +19,7 @@ string FirstComeFirstServed(deque<Process> arrivalList, int numLines){
 	int waitingTime = 0;
 	long totalWaitingTime = 0;
 	for (int i = 0; i < numLines; i++){
-		Process currProcess = arrivalList.at(i);
+		Process currProcess = arrivalList.at(i);	
 		//Case that no-proces has arrived
 		if (clock < currProcess.getArrivalTime()){
 			clock = currProcess.getArrivalTime();
@@ -36,7 +33,7 @@ string FirstComeFirstServed(deque<Process> arrivalList, int numLines){
 	}
 	float turnAround = totalTurnAroundTime * 1.0 / numLines;
 	float waiting = totalWaitingTime * 1.0 / numLines;
-	float throughput = 1.0 / turnAround;
+	float throughput = numLines * 1.0 / clock;
 	
 	stringstream s;
 	s << "	--- " << "FCFS" << " ---" << endl;
@@ -63,7 +60,7 @@ string ShortestJobFirst(deque<Process> arrivalList, int numLines) {
 				ready.push_back(arrivalList.at(i));
 				i++;
 				continue;
-			} else if (ready.back().getBurstDuration() < arrivalList.at(i).getBurstDuration()){
+			} else if (ready.back().getBurstDuration() <= arrivalList.at(i).getBurstDuration()){
 				ready.push_back(arrivalList.at(i));
 				i++;
 				continue;
@@ -77,7 +74,7 @@ string ShortestJobFirst(deque<Process> arrivalList, int numLines) {
 			}
 		}
 		clock++;
-		if(ready.front().decrementCounter()){
+		if((!ready.empty()) and (ready.front().decrementCounter())){
 			turnAroundTime = clock - ready.front().getArrivalTime();
 			waitingTime = turnAroundTime - ready.front().getBurstDuration();
 			totalTurnAroundTime += turnAroundTime;
@@ -88,7 +85,7 @@ string ShortestJobFirst(deque<Process> arrivalList, int numLines) {
 	}
 	float turnAround = totalTurnAroundTime * 1.0 / numLines;
 	float waiting = totalWaitingTime * 1.0 / numLines;
-	float throughput = 1.0 / turnAround;
+	float throughput = numLines * 1.0 / clock;
 	
 	stringstream s;
 	s << "	--- " << "SJFP" << " ---" << endl;
@@ -116,7 +113,7 @@ string Priority(deque<Process> arrivalList, int numLines){
 				ready.push_back(arrivalList.at(i));
 				i++;
 				continue;
-			} else if (ready.back().getPriority() < arrivalList.at(i).getPriority()){
+			} else if (ready.back().getPriority() <= arrivalList.at(i).getPriority()){
 				ready.push_back(arrivalList.at(i));
 				i++;
 				continue;
@@ -130,7 +127,7 @@ string Priority(deque<Process> arrivalList, int numLines){
 			}
 		}
 		clock++;
-		if(ready.front().decrementCounter()){
+		if((!ready.empty()) and ready.front().decrementCounter()){
 			turnAroundTime = clock - ready.front().getArrivalTime();
 			waitingTime = turnAroundTime - ready.front().getBurstDuration();
 			totalTurnAroundTime += turnAroundTime;
@@ -141,7 +138,7 @@ string Priority(deque<Process> arrivalList, int numLines){
 	}
 	float turnAround = totalTurnAroundTime * 1.0 / numLines;
 	float waiting = totalWaitingTime * 1.0 / numLines;
-	float throughput = 1.0 / turnAround;
+	float throughput = numLines * 1.0 / clock;
 	
 	stringstream s;
 	s << "	--- " << "Priority" << " ---" << endl;
@@ -167,11 +164,12 @@ Process createProcess(string record){
 	return Process(val1,val2, val3, val4);
 }
 
-int main() {
+int main(int argc, char* argv[]) {
 	//TODO throughput value is incorrect
-	//TODO THIS CANNOT BE HARDCODED
-    //string inputFile = "CS370-HW5-Input.csv";
-	string inputFile = "AtestFile.csv";
+	if (argc < 2){
+		return 1;
+	}
+	string inputFile = argv[1];	
     fstream inputFS (inputFile);
 
     //Check if the file is open or not
@@ -179,9 +177,6 @@ int main() {
 		std::cout << "Could not open file" << endl;
 		return 1;
 	}
-
-	string PID;
-	int arrivalTime = 0;
 
 	int numLines=0;
 	deque<Process> processList;
@@ -199,7 +194,7 @@ int main() {
 			}
 			bool atEnd = true;
 			for(int i = 0; i < static_cast<int> (processList.size()); i++){
-				if(arrivalTime > processList.at(i).getArrivalTime()){
+				if(p.getArrivalTime() < processList.at(i).getArrivalTime()){
 					processList.insert(processList.begin() + i,p);
 					atEnd = false;
 					break;
