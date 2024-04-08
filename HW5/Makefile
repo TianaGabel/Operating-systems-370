@@ -13,4 +13,4 @@ clean:
 	rm -f Scheduler *.o *.zip
 	
 package:
-	zip LastName-FirstName-HW5.zip README.txt Makefile Scheduler.cpp Process.cpp Process.h
+	zip Gabel-Tatiana-HW5.zip README.txt Makefile Scheduler.cpp Process.cpp Process.h
