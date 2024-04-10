@@ -10,6 +10,6 @@ build: $(FILES)
 clean: 
 	rm -f *.o $(OUT_EXE)
 package: 
-	zip -r Tatiana_Gabel_ExtraCredit.zip profiler.c makefile README.txt
+	zip -r Tatiana_Gabel_ExtraCredit.tar profiler.c makefile README.txt
 #run:	${OUT_EXE}
 #		./${OUT_EXE} ${ARGS}
