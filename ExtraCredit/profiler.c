@@ -3,10 +3,6 @@
 #include <string.h>
 #include <unistd.h>
 
-char createArrayOfStrings() {
-    
-}
-
 int main(int argc, char *argv[]) {
 
     //Argc is num of args, argv is an array of 'strings'
@@ -36,13 +32,14 @@ int main(int argc, char *argv[]) {
     }
     //stat file
     char *token = strtok(line, " ");
-    char *tokens[15];
+    char *tokens[16];
 
-    for(int i = 1; i < 15; ++i){
+    for(int i = 1; i < 16; ++i){
         tokens[i] = token;
         token = strtok(NULL, " ");
     }
-    
+    fclose(file);
+
     printf("checking pid %s\n",tokens[1]); // col 1
     printf("%-25s", "Executable:");
     printf("%s\n",tokens[2]); // col 2
@@ -60,15 +57,44 @@ int main(int argc, char *argv[]) {
     printf("%-25s", "Kernel mode:");
     printf("%.4f sec\n",kernelMode); //stime col 15
 
-    
-    // printf("%-25s", "Virtual memory:");
-    // printf("%s\n",token[1]); //size col 1
-    // printf("%-25s", "Resident pages:");
-    // printf("%s\n",token[1]); //col 2
-    // printf("%-25s", "Shared pages:");
-    // printf("%s\n",token[1]); // col 3
-    // printf("%-25s", "Page faults:");
-    // printf("%s\n",token[1]); //majflt col 12
+    //STATM file
+    char pathm[] = "/proc/";
+    char fnamem[] = "/statm";
+    strcat(pathm,pid);
+    strcat(pathm,fnamem);
+    printf("checking path name %s\n",pathm);
+    FILE *filem = fopen(pathm, "r");
+
+    if (filem == NULL){
+        //TODO: Gracefully give a message that the process was not found
+        printf("Pid %s was not found\n",pid);
+        return EXIT_FAILURE;
+    }
+
+    char linem[256];
+    //This gets a line of size line
+    if(fgets(linem,sizeof(linem),filem) == NULL){
+        //This means that the file failed to read anything
+        fclose(filem);
+        printf("File did not contain information\n",pid);
+        return EXIT_FAILURE;
+    }
+    //stat file
+    char *tokenm = strtok(linem, " ");
+    char *tokensm[4];
+
+    for(int i = 1; i < 4; ++i){
+        tokensm[i] = tokenm;
+        tokenm = strtok(NULL, " ");
+    }
+    printf("%-25s", "Virtual memory:");
+    printf("%s bytes\n",tokensm[1]); //size col 1
+    printf("%-25s", "Resident pages:");
+    printf("%s\n",tokensm[2]); //col 2
+    printf("%-25s", "Shared pages:");
+    printf("%s\n",tokensm[3]); // col 3
+    printf("%-25s", "Page faults:");
+    printf("%s\n",tokens[12]); //majflt col 12
 
     fclose(file);
 
